@@ -500,7 +500,7 @@ lightbox.className = "frame-lightbox d-none";
 lightbox.innerHTML = `
   <div class="frame-lightbox-backdrop"></div>
   <div class="frame-lightbox-content card shadow-lg text-bg-dark">
-    <button class="frame-lightbox-close" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+    <button class="frame-lightbox-close" aria-label="Close">Close</button>
     <img src="" alt="" class="img-fluid rounded mb-3" id="frame-lightbox-img">
     <div>
       <h5 id="frame-lightbox-title"></h5>
