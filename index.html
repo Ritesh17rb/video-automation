@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automation Replay Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTUiIGZpbGw9IiMyNTYzZWIiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJtMTYgNyAyIDcgNyAyLTcgMi0yIDctMi03LTctMiA3LTJaIi8+PC9zdmc+">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/github-dark.min.css" crossorigin="anonymous">
+  <style>
+    body {
+      min-height: 100vh;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 1.2rem;
+      background: radial-gradient(circle at top, rgba(79, 70, 229, 0.08), transparent 45%), linear-gradient(180deg, #0f172a 0%, #020617 60%);
+      color: #f8fbff;
+      letter-spacing: 0.01em;
+    }
+
+    .narrative {
+      max-width: 820px;
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: #f9fbff;
+    }
+
+    .frame-img {
+      width: 100%;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .frame-img:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.45);
+    }
+
+    .frame-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1055;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .frame-lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(6px);
+    }
+
+    .frame-lightbox-content {
+      position: relative;
+      z-index: 1;
+      max-width: min(1320px, 96vw);
+      width: 100%;
+      padding: 2rem 2.5rem 2rem 2rem;
+    }
+    .frame-lightbox-content img {
+      width: 100%;
+      max-height: 82vh;
+      object-fit: contain;
+      border-radius: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    .frame-lightbox-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(248, 250, 252, 0.45);
+      color: #f8fbff;
+      box-shadow: 0 4px 18px rgba(2, 6, 23, 0.5);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .frame-lightbox-close:hover {
+      background: rgba(248, 250, 252, 0.95);
+      color: #0f172a;
+      border-color: rgba(15, 23, 42, 0.2);
+    }
+
+    .card {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 1rem;
+      background: rgba(15, 23, 42, 0.55);
+      color: inherit;
+      backdrop-filter: blur(4px);
+    }
+    .video-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+    .video-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1.5px solid transparent;
+      pointer-events: none;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .video-card:hover,
+    .video-card:focus-visible {
+      transform: translateY(-6px);
+      border-color: rgba(94, 234, 212, 0.7);
+      box-shadow: 0 20px 55px rgba(2, 6, 23, 0.45);
+      background: rgba(15, 23, 42, 0.75);
+      outline: none;
+    }
+    .video-card:hover::before,
+    .video-card:focus-visible::before {
+      border-color: rgba(94, 234, 212, 0.8);
+      box-shadow: 0 0 25px rgba(94, 234, 212, 0.35);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+    .script-card .script-toggle {
+      border-color: rgba(148, 163, 184, 0.5);
+      color: #f8fbff;
+    }
+    .script-card .script-toggle i {
+      font-size: 1rem;
+    }
+    .process-card {
+      position: relative;
+      padding: 1.75rem;
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.85));
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      overflow: hidden;
+      color: #e2e8f0;
+    }
+    .process-card h3 {
+      color: #f1f5ff;
+    }
+    .process-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid transparent;
+      background: linear-gradient(120deg, rgba(56, 189, 248, 0.35), rgba(129, 140, 248, 0.35));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 0;
+    }
+    .process-card:hover::after {
+      opacity: 0.35;
+    }
+    .process-card > * {
+      position: relative;
+      z-index: 1;
+    }
+    .process-card .process-body {
+      margin-top: 0.9rem;
+    }
+    .process-header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 0.75rem;
+      color: #a5b4fc;
+    }
+    .process-header .icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(94, 234, 212, 0.18);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #5eead4;
+      border: 1px solid rgba(94, 234, 212, 0.35);
+    }
+    .process-list {
+      padding-left: 1.2rem;
+      margin-bottom: 0;
+      color: rgba(226, 232, 240, 0.92);
+    }
+    .process-list li {
+      margin-bottom: 0.4rem;
+      font-size: 1rem;
+    }
+    .replication-card {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 1.35rem 1.5rem;
+      height: 100%;
+      font-size: 1.05rem;
+    }
+    .replication-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.85rem;
+      color: #e0e7ff;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .replication-card h3 i {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+    .replication-card h3 i {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+    .info-steps {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      font-size: 1.05rem;
+      color: rgba(226, 232, 240, 0.92);
+    }
+    .info-steps li {
+      margin-bottom: 1.4rem;
+    }
+    .command-block {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(2, 6, 23, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      border-radius: 0.55rem;
+      padding: 0.55rem 0.85rem;
+      margin-top: 0.45rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .command-block.copied {
+      border-color: #5eead4;
+      box-shadow: 0 0 12px rgba(94, 234, 212, 0.35);
+    }
+    .command-block code {
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 1rem;
+      color: #cbd5f5;
+      flex: 1;
+      margin: 0;
+    }
+    .command-block .copy-command {
+      flex: 0 0 auto;
+      border-color: rgba(148, 163, 184, 0.5);
+      color: #f8fbff;
+    }
+    .command-block .copy-command i {
+      pointer-events: none;
+    }
+    #global-copy-alert {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2000;
+      min-width: 280px;
+      text-align: center;
+    }
+
+    .card .small,
+    .card small {
+      font-size: 1.05rem;
+    }
+
+    .card-text,
+    .text-muted {
+      color: #f7fbff !important;
+      font-size: 1.05rem;
+    }
+
+    .btn-outline-primary,
+    .btn-outline-secondary,
+    .btn-outline-light {
+      border-width: 1.5px;
+    }
+
+    .frame-preview {
+      border: none;
+      background: transparent;
+      cursor: zoom-in;
+    }
+    .frame-caption {
+      color: #f9fbff;
+      font-size: 1.2rem;
+      line-height: 1.5;
+    }
+    .frame-caption-secondary {
+      color: #d0dcff;
+      font-size: 1rem;
+    }
+
+    [data-bs-theme="light"] body {
+      background: radial-gradient(circle at top, rgba(79, 70, 229, 0.08), transparent 45%), #f9fafb;
+      color: #0f172a;
+    }
+
+    [data-bs-theme="light"] .card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+    }
+    [data-bs-theme="light"] .video-card:hover,
+    [data-bs-theme="light"] .video-card:focus-visible {
+      border-color: rgba(79, 70, 229, 0.45);
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.15);
+      background: #f4f4ff;
+    }
+    [data-bs-theme="light"] .video-card:hover::before,
+    [data-bs-theme="light"] .video-card:focus-visible::before {
+      border-color: rgba(79, 70, 229, 0.55);
+      box-shadow: 0 0 25px rgba(79, 70, 229, 0.35);
+    }
+
+    [data-bs-theme="light"] .process-card {
+      background: linear-gradient(145deg, #f8fafc, #eef2ff);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      color: #0f172a;
+    }
+    [data-bs-theme="light"] .process-card::after {
+      background: linear-gradient(120deg, rgba(79, 70, 229, 0.2), rgba(14, 165, 233, 0.2));
+    }
+    [data-bs-theme="light"] .process-header {
+      color: #1e293b;
+    }
+    [data-bs-theme="light"] .process-header .icon-badge {
+      background: rgba(37, 99, 235, 0.12);
+      border-color: rgba(37, 99, 235, 0.3);
+      color: #1d4ed8;
+    }
+    [data-bs-theme="light"] .script-card .script-toggle {
+      border-color: rgba(15, 23, 42, 0.25);
+      color: #0f172a;
+    }
+    [data-bs-theme="light"] .process-card h3 {
+      color: #0f172a;
+    }
+    [data-bs-theme="light"] .card .small,
+    [data-bs-theme="light"] .card small {
+      color: #1f2937 !important;
+    }
+    [data-bs-theme="light"] .frame-caption {
+      color: #0f172a;
+    }
+    [data-bs-theme="light"] .frame-caption-secondary {
+      color: #334155;
+    }
+
+    [data-bs-theme="light"] .process-list {
+      color: #475569 !important;
+    }
+    [data-bs-theme="light"] .replication-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      color: #0f172a;
+    }
+    [data-bs-theme="light"] .replication-card h3 {
+      color: #0f172a;
+    }
+    [data-bs-theme="light"] .info-steps {
+      color: #475569 !important;
+    }
+    [data-bs-theme="light"] .command-block {
+      background: #f8fafc;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      color: #0f172a;
+    }
+    [data-bs-theme="light"] .command-block code {
+      color: #0f172a;
+    }
+    [data-bs-theme="light"] .command-block .copy-command {
+      border-color: rgba(15, 23, 42, 0.2);
+      color: #0f172a;
+    }
+
+    [data-bs-theme="light"] .card-title {
+      color: #0f172a;
+    }
+
+    [data-bs-theme="light"] .narrative,
+    [data-bs-theme="light"] .text-muted {
+      color: #475569 !important;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href=".">Automation Replay Dashboard</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="ms-auto"></div>
+        <div class="nav-item dropdown ms-2" role="group" aria-label="Toggle dark mode" title="Toggle Dark Mode">
+          <button class="dark-theme-toggle btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme (auto)">
+            <i class="bi bi-circle-half"></i> <span class="d-lg-none ms-2">Toggle theme</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><button class="dropdown-item" data-bs-theme-value="light"><i class="me-2 bi bi-sun-fill"></i> Light</button></li>
+            <li><button class="dropdown-item" data-bs-theme-value="dark"><i class="me-2 bi bi-moon-stars-fill"></i> Dark</button></li>
+            <li><button class="dropdown-item" data-bs-theme-value="auto"><i class="me-2 bi bi-circle-half"></i> Auto</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div id="global-copy-alert" class="alert alert-success d-none" role="alert"></div>
+
+  <div class="container mt-4">
+    <h1 class="display-1 my-4 text-center">Automation Replay Dashboard</h1>
+    <h2 class="display-6 text-center">From raw footage to reliable Playwright specs</h2>
+    <div class="mx-auto my-3 narrative text-center text-muted">
+      Five manual QA recordings were parsed frame-by-frame, meaningful evidence was compressed to ≤30 KB, on-screen URLs were validated live,
+      and each flow was rebuilt as a deterministic Playwright journey. Scroll down for the reconstruction story, keyframes,
+      reasoning trail, and executable scripts for every video.
+    </div>
+  </div>
+
+  <div class="container my-4">
+    <div id="demo-cards" class="row g-3 justify-content-center mb-4"></div>
+
+    <div id="output" class="mb-5"></div>
+  </div>
+
+  <section class="container my-5">
+    <div class="text-center mb-4">
+      <p class="narrative mx-auto text-muted">Below is the three-stage pipeline that keeps every Playwright script faithful to the recordings while remaining resilient to UI drift.</p>
+    </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4 process-grid">
+      <div class="col">
+        <div class="card process-card shadow-sm h-100 border-0">
+          <div class="process-header">
+            <div class="icon-badge"><i class="bi bi-camera-reels-fill"></i></div>
+            <h3 class="h5 mt-1 mb-0">Capture & Curate</h3>
+          </div>
+          <div class="process-body">
+            <p class="small text-muted mb-3">Scene-detection finds motion spikes, then we hand-trim to the decisive UI states while preserving aspect ratio and ≤30 KB budgets.</p>
+            <ul class="process-list">
+            <li>Frame similarity + OCR to confirm the URL bar.</li>
+            <li>Visual entropy score keeps only meaningful pauses.</li>
+            <li>Every saved frame pairs with its timestamp + action label.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card process-card shadow-sm h-100 border-0">
+          <div class="process-header">
+            <div class="icon-badge"><i class="bi bi-diagram-3-fill"></i></div>
+            <h3 class="h5 mt-1 mb-0">Interpret & Align</h3>
+          </div>
+          <div class="process-body">
+            <p class="small text-muted mb-3">Vision + UI models narrate deltas between frames so we can map each pause to a DOM element, selector strategy, and assumption.</p>
+            <ul class="process-list">
+            <li>Frame findings table links evidence → reasoning.</li>
+            <li>Selectors are dry-run on the live app for stability.</li>
+            <li>Conflicts trigger a manual revisit with the footage.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card process-card shadow-sm h-100 border-0">
+          <div class="process-header">
+            <div class="icon-badge"><i class="bi bi-robot"></i></div>
+            <h3 class="h5 mt-1 mb-0">Automate & Verify</h3>
+          </div>
+          <div class="process-body">
+            <p class="small text-muted mb-3">Specs replay the action order with 2–3 s pacing, adaptive waits, and safety nets for ad skips, modal dismissals, or dice re-rolls.</p>
+            <ul class="process-list">
+            <li>Reusable helpers enforce slow-mo + retry logic.</li>
+            <li>Scripts assert the same copy highlighted in frames.</li>
+            <li>Final run compares screenshots to ensure parity.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container my-5">
+    <div class="row g-4">
+      <div class="col-12">
+        <div class="card replication-card shadow-sm border-0">
+          <h3><i class="bi bi-terminal"></i> Run The Playwright Script</h3>
+          <p class="small text-muted mb-3">We validated these commands using the existing <code>video1/script.spec.ts</code> in the repo. Replace <code>video1</code> with any other folder that contains a spec you created.</p>
+          <ul class="info-steps">
+            <li>
+              Install Playwright (one-time)
+              <div class="command-block">
+                <code>npx playwright install --with-deps chromium</code>
+                <button class="btn btn-sm btn-outline-info copy-command" type="button" data-copy-command="npx playwright install --with-deps chromium" aria-label="Copy install command"><i class="bi bi-clipboard"></i></button>
+              </div>
+              <span class="small text-muted d-block mt-1">Need local dependencies? Run <code>npm install -D @playwright/test</code>, otherwise <code>npx</code> works fine.</span>
+            </li>
+            <li>
+              Execute the automation
+              <div class="command-block">
+                <code>npx playwright test video1/script.spec.ts --browser=chromium --headed</code>
+                <button class="btn btn-sm btn-outline-info copy-command" type="button" data-copy-command="npx playwright test video1/script.spec.ts --browser=chromium --headed" aria-label="Copy run command"><i class="bi bi-clipboard"></i></button>
+              </div>
+              <span class="small text-muted d-block mt-1">Swap <code>video1</code> with your own folder (e.g., <code>my-test/script.spec.ts</code>).</span>
+            </li>
+            <li>
+              Optional: slow things down for demo mode
+              <div class="command-block">
+                <code>PWDEBUG=1 npx playwright test video1/script.spec.ts --browser=chromium --headed</code>
+                <button class="btn btn-sm btn-outline-info copy-command" type="button" data-copy-command="PWDEBUG=1 npx playwright test video1/script.spec.ts --browser=chromium --headed" aria-label="Copy slow run command"><i class="bi bi-clipboard"></i></button>
+              </div>
+              <span class="small text-muted d-block mt-1">Setting <code>PWDEBUG=1</code> replays the script step-by-step (useful when you just need to watch it, no video required).</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "highlight.js": "https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/+esm",
+        "lit-html": "https://cdn.jsdelivr.net/npm/lit-html@3.3.1/+esm",
+        "lit-html/directives/unsafe-html.js": "https://cdn.jsdelivr.net/npm/lit-html@3.3.1/directives/unsafe-html.js"
+      }
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@gramex/ui@0.3.1/dist/dark-theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+
+</html>

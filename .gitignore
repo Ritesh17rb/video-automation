@@ -1,0 +1,21 @@
+# Local environment
+.env
+.venv/
+
+# Node / tooling artifacts
+node_modules/
+package.json
+package-lock.json
+scripts/
+
+# Generated outputs
+tmp/
+outputs/
+test-results/
+
+# Misc tooling folders
+viu/
+
+# Docs/config not needed for UI publish
+prompts.md
+llm-configuration.md
