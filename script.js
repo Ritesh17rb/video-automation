@@ -4,7 +4,7 @@ import { unsafeHTML } from "lit-html/directives/unsafe-html.js";
 
 const videos = [
   {
-    id: "video1",
+    id: "playground-pro",
     title: "Playground Pro – Predictor & Vault",
     summary: "Spin the WC predictor, mint the quantum key, refresh the Stanford playlist, unlock the vault after the modal, bump XP, and inspect the GitHub explorer.",
     preview: "video1/frames/frame01.webp",
@@ -44,7 +44,7 @@ const videos = [
     ]
   },
   {
-    id: "video2",
+    id: "strategy-board",
     title: "Strategy Board Game – Custom Scenario",
     summary: "Reset the board, launch the custom 'india' mission on Hard mode, roll until a question appears, answer it, and close the overlay.",
     preview: "video2/frames/frame01.webp",
@@ -83,7 +83,7 @@ const videos = [
     ]
   },
   {
-    id: "video3",
+    id: "youtube-llm",
     title: "YouTube – LLM Deep Dive",
     summary: "Mimic the exploratory typing, search for “how llm works”, open the 3Blue1Brown video, and handle the pre-roll ad.",
     preview: "video3/frames/frame01.webp",
@@ -153,7 +153,7 @@ const videos = [
     ]
   },
   {
-    id: "video5",
+    id: "chatgpt-incognito",
     title: "ChatGPT Incognito Greeting",
     summary: "Incognito Google search for chatgpt.com followed by the “hi / i am good” exchange inside the ChatGPT composer.",
     preview: "video5/frames/frame01.webp",
