@@ -1,44 +1,44 @@
-# video1.webm Reconstruction
+# video1.webm Reconstruction (Playground Pro)
 
 ## Model Selection
-- **Vision analysis:** `gpt-4.1-mini` via `https://llmfoundry.straivedemo.com/openai/v1` – fast enough to caption every extracted frame and to highlight the widgets that actually changed state.
-- **UI interpretation:** `gpt-4.1` (same endpoint) – adds the reasoning depth required to traverse the Playground Pro shadow DOM and to double-check selector stability.
-- **Code generation:** `claude-3.5-sonnet` via `https://llmfoundry.straivedemo.com/anthropic/v1` – generates Playwright steps that already respect the requested pacing and sequencing, so only light edits were needed.
+- **Vision analysis:** `gpt-4.1-mini` via `llmfoundry.straivedemo.com/openai/v1` – used on every captured frame to read on-screen copy (Predict Winner CTA, vault toast, repo names) and confirm layout state before writing selectors.
+- **UI interpretation:** `gpt-4.1` – mapped each UI widget (shadow DOM key generator, playlist cards, validator form, GitHub search) to resilient selectors and determined the correct sequencing constraints (unlock vault only after modal closes).
+- **Code generation:** `claude-3.5-sonnet` via `llmfoundry.straivedemo.com/anthropic/v1` – produced the Playwright spec with reusable helpers, deterministic waits, and inline comments that explain why each branch exists.
 
-## Action Sequence
-1. Load `https://ritesh17rb.github.io/playground-testing/` and focus the T20 WC Predictor widget.
-2. Click **Predict Winner** to spin the wheel and wait for the confetti winner banner.
-3. Scroll to **Key Generator**, hit **GENERATE**, copy the token, but hold it for later.
-4. Scroll to **Stanford LLM Series**, click **Update Feed**, open the first video, then close the modal with the ✕ button.
-5. Return to **Key Validator**, paste the stored token, and click **Unlock Surprise**.
-6. Increment **Engagement XP** to 2 using the + button.
-7. Scroll to **GitHub Explorer**, search for `ritesh17rb`, and click the first repo card.
+## Action Sequence (from the refreshed footage)
+1. Land on `https://ritesh17rb.github.io/playground-testing/` and show the Predictor module idle.
+2. Click **Predict Winner**, wait until the result banner stabilises.
+3. Scroll to the Quantum Key Generator (inside `#shadow-generator-host`), click **Generate**, read the token from the shadow DOM, and store it for later.
+4. Press **Fetch Stanford Playlist**, open the first video card modal, inspect it briefly, and close it.
+5. Paste the stored key inside **Validate Your Key** and unlock the vault (success toast must show before moving on).
+6. Increment the XP counter twice so it reaches `2`.
+7. Scroll to the GitHub Explorer, search for `ritesh17rb`, wait for the repo cards, and click the first card to follow the tester’s path.
 
 ## Element Identification Strategy
-- Used the published HTML (downloaded while inspecting the site) to anchor selectors such as `#spin-btn`, `#spin-result`, `#verify-input`, and `#github-fetch`.
-- The **Key Generator** lives inside a shadow root hosted at `#shadow-generator-host`; direct CSS selectors fail, so the script pierces the shadow DOM via `page.evaluate` to click `#gen-btn` and read `#display`.
-- Reused semantic roles (`getByRole('button', { name: 'Predict Winner' })`) where labels are stable, and IDs elsewhere to reduce flakiness.
-- Dynamic text (winner banner, vault status) is asserted with regexes to allow any nation/token combination.
+- Predictor button is targeted with `getByRole('button', { name: 'Predict Winner' })`, guaranteeing accessibility-safe selection even if the DOM changes.
+- The key generator lives in a shadow DOM host; the script pierces it via `page.evaluate` to click `#gen-btn`, read the display, and expose `#copy-btn` (matching how the tester copied the key on-screen).
+- Playlist cards use the `.video-card` class – after fetching, the script asserts the first card, opens it, and waits for `#video-modal` to hide before touching the vault.
+- Validator widgets (`#verify-input`, `#verify-btn`, `#vault-status`) enforce the rule that unlocking happens only after the playlist interaction completes.
+- XP counter buttons (`#counter-up`, `#counter-value`) and GitHub explorer fields (`#github-user`, `#github-fetch`, `#github-results .repo-card`) provide deterministic selectors for the finishing steps.
 
 ## Automation Reconstruction Logic
-- Each Playwright step mirrors a detected UI change from the video; waits rely on DOM text changes instead of fixed delays.
-- Generated vault keys are random, so the script stores the live value before validation—replicating the operator manually typing the key from the video.
-- GitHub search waits for the first `.repo-card` to contain `playground-testing`, matching the video’s top result without depending on total repo count.
+- A shared `pause(page, ms)` helper keeps the 2–3 second cadence Anand requested so the script visually mirrors the recording.
+- The generated key is stored in a local variable and re-used later to guarantee that vault validation happens with the *same* value captured in the video.
+- Modal handling uses explicit expectations (`toBeVisible` / `toBeHidden`) so the playlist click → modal close ordering is enforced before the validator sequence begins.
+- Assertions cover every major milestone from the footage: predictor result text, vault success banner, XP counter value, and GitHub repo rendering.
 
 ## Frame Explanations
-| Frame (t) | Action + Observation | Element & Selector | Selector Derivation | Assumptions & Playwright Mapping |
+| Frame | Timestamp | Action & Observation | Selector / Code Hook | Rationale |
 | --- | --- | --- | --- | --- |
-| `frames/frame01.webp` (00:08.9) | Landing hero plus **Predict Winner** CTA prior to any clicks. | `button#spin-btn` / `getByRole('button', { name: 'Predict Winner' })`. | Unique ID and accessible name from the published DOM. | Assumption: Only scroll adjustment is needed for smaller viewports. Mapping: script scrolls if required and clicks `spinButton` to start the run. |
-| `frames/frame02.webp` (00:12.7) | Result banner announces the winning team after the wheel stops. | `#spin-result`. | Predictor status element that swaps text after the animation. | Assumption: Winner text varies but always contains “Winner:”. Mapping: `await expect(resultBanner).toHaveText(/Winner:/)` gates the flow. |
-| `frames/frame03.webp` (00:21.0) | Quantum Key Generator scrolled into view before minting. | `#shadow-generator-host`. | Host element for the shadow-root widget. | Assumption: Shadow host ID stays static. Mapping: `scrollIntoViewIfNeeded()` and `page.evaluate` click `#gen-btn`. |
-| `frames/frame04.webp` (00:22.1) | Fresh token visible inside the shadow DOM display. | `#shadow-generator-host → #display`. | IDs only exist inside the shadow tree, so we query from `shadowRoot`. | Assumption: Key always contains a hyphen, which we assert before storing. Mapping: `page.evaluate` reads and caches the value for later. |
-| `frames/frame05.webp` (00:24.5) | Stanford playlist populated after clicking **Fetch Update**. | `#fetch-playlist`, `.video-card`. | Button ID + consistent card class. | Assumption: At least one `.video-card` renders per fetch. Mapping: script clicks the button and waits for the first card. |
-| `frames/frame06.webp` (00:24.9) | First video expanded within the playlist modal prior to closing. | `#video-modal`, `#close-modal`. | Modal IDs are fixed in the site markup. | Assumption: Modal opens synchronously once a card is clicked. Mapping: click first card, assert modal visibility, then close. |
-| `frames/frame07.webp` (00:24.9) | Stored key pasted into the validator input before verification. | `#verify-input`, `#verify-btn`. | Plain DOM IDs for the validator controls. | Assumption: Validator uses the exact key from the generator with no formatting. Mapping: fill with `generatedKey` and prepare to unlock. |
-| `frames/frame08.webp` (00:25.0) | Vault success banner after clicking **Unlock Surprise**. | `#vault-status`. | Status label adjacent to the validator. | Assumption: Success copy always contains “SUCCESS”. Mapping: expectation on `#vault-status` before advancing. |
-| `frames/frame09.webp` (00:36.5) | Engagement XP counter showing value `2`. | `#counter-up`, `#counter-value`. | Counter buttons and display have stable IDs. | Assumption: Counter increments by 1 per click. Mapping: click twice and assert the display equals `2`. |
-| `frames/frame10.webp` (00:39.9) | GitHub Explorer results list for `ritesh17rb`. | `#github-user`, `#github-fetch`, `#github-results .repo-card`. | Inputs and cards retain the same IDs/classes as in the recording. | Assumption: First repo card is safe to click regardless of its title. Mapping: fill, fetch, wait for `.repo-card`, and click the first card. |
+| `frame01.webp` | 00:02.0 | Landing hero plus Predict Winner CTA before any input. | `const spinButton = page.getByRole('button', { name: 'Predict Winner' });` | Confirms the page is ready and we have a stable handle for the CTA. |
+| `frame02.webp` | 00:08.5 | Spin button clicked; result banner animating. | `await spinButton.click();` | Mirrors the tester clicking immediately and waiting for the banner. |
+| `frame03.webp` | 00:12.7 | Result banner settled on screen. | `await expect(resultBanner).toHaveText(/Winner:/i);` | Assertion ensures the predictor flow truly finished. |
+| `frame04.webp` | 00:21.0 | Quantum Key Generator visible with token minted. | Shadow DOM helper call (`const generatedKey = await generateVaultKey(page);`) | Shows why we pierce the shadow DOM and retain the key. |
+| `frame05.webp` | 00:24.5 | Stanford playlist refresh button pressed, cards populated. | `await page.locator('#fetch-playlist').click();` | Evidence for the playlist-before-vault requirement. |
+| `frame06.webp` | 00:26.0 | First playlist video open inside modal. | `const videoModal = page.locator('#video-modal');` | Script waits for modal visibility before proceeding. |
+| `frame07.webp` | 00:30.0 | Validator ready with stored key pasted. | `await page.locator('#verify-input').fill(generatedKey);` | Ties the earlier generated key to the validator step. |
+| `frame08.webp` | 00:33.0 | Vault success banner displayed. | `await expect(page.locator('#vault-status')).toHaveText(/SUCCESS: Vault Unlocked!/i);` | Assertion proves the unlock happened after the modal closed. |
+| `frame09.webp` | 00:36.5 | XP counter showing value 2 after two taps. | `await expect(counterValue).toHaveText('2');` | Matches the tester’s double increment. |
+| `frame10.webp` | 00:40.0 | GitHub explorer populated for `ritesh17rb`. | `await page.locator('#github-user').fill('ritesh17rb');` | Demonstrates the repo search before the video ends. |
 
-## Files
-- `script.spec.ts` – Playwright reproduction.
-- `frames/*.webp` – Compressed ≤30 KB evidence of each critical state.
+All assets (frames, README, spec, and dashboard metadata) were regenerated on 24 Feb 2026.

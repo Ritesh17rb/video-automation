@@ -5,10 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Automation Replay Dashboard</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTUiIGZpbGw9IiMyNTYzZWIiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJtMTYgNyAyIDcgNyAyLTcgMi0yIDctMi03LTctMiA3LTJaIi8+PC9zdmc+">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTUiIGZpbGw9IiMyNTYzZWIiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJtMTYgNyAyIDcgNyAyLTcgMi0yIDctMi03LTctMiA3LTJaIi8+PC9zdmc+">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/github-dark.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/github-dark.min.css"
+    crossorigin="anonymous">
   <style>
     body {
       min-height: 100vh;
@@ -45,7 +47,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1.5rem;
+      padding: 1rem;
     }
 
     .frame-lightbox-backdrop {
@@ -58,17 +60,33 @@
     .frame-lightbox-content {
       position: relative;
       z-index: 1;
-      max-width: min(1320px, 96vw);
+      max-width: min(1560px, 97vw);
       width: 100%;
-      padding: 2rem 2.5rem 2rem 2rem;
+      padding: 1.25rem 2rem 1.25rem 1.5rem;
+      max-height: 98vh;
+      overflow: hidden;
     }
-    .frame-lightbox-content img {
+
+    .frame-lightbox-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 992px) {
+      .frame-lightbox-grid {
+        grid-template-columns: minmax(0, 65%) minmax(0, 35%);
+      }
+    }
+
+    .frame-lightbox-media img {
       width: 100%;
-      max-height: 82vh;
+      max-height: 93vh;
       object-fit: contain;
       border-radius: 0.75rem;
-      margin-top: 1.5rem;
+      margin-top: 0.5rem;
     }
+
     .frame-lightbox-close {
       position: absolute;
       top: 0.75rem;
@@ -85,10 +103,43 @@
       padding: 0.45rem 1.25rem;
       transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
+
     .frame-lightbox-close:hover {
       background: rgba(248, 250, 252, 0.95);
       color: #0f172a;
       border-color: rgba(15, 23, 42, 0.25);
+    }
+
+    .lightbox-code-panel {
+      background: rgba(2, 6, 23, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      max-height: 95vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .lightbox-code-panel pre {
+      flex: 1;
+      margin: 0;
+      overflow-y: auto;
+      max-height: calc(95vh - 5rem);
+    }
+
+    .lightbox-code-panel code {
+      display: block;
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.95rem;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+    }
+
+    mark {
+      background: rgba(250, 204, 21, 0.35);
+      color: inherit;
+      padding: 0 0.2em;
+      border-radius: 0.2rem;
     }
 
     .card {
@@ -98,12 +149,14 @@
       color: inherit;
       backdrop-filter: blur(4px);
     }
+
     .video-card {
       position: relative;
       overflow: hidden;
       cursor: pointer;
       transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
     }
+
     .video-card::before {
       content: "";
       position: absolute;
@@ -113,6 +166,7 @@
       pointer-events: none;
       transition: border-color 0.25s ease, box-shadow 0.25s ease;
     }
+
     .video-card:hover,
     .video-card:focus-visible {
       transform: translateY(-6px);
@@ -121,6 +175,7 @@
       background: rgba(15, 23, 42, 0.75);
       outline: none;
     }
+
     .video-card:hover::before,
     .video-card:focus-visible::before {
       border-color: rgba(94, 234, 212, 0.8);
@@ -132,13 +187,16 @@
       font-weight: 600;
       color: #f8fafc;
     }
+
     .script-card .script-toggle {
       border-color: rgba(148, 163, 184, 0.5);
       color: #f8fbff;
     }
+
     .script-card .script-toggle i {
       font-size: 1rem;
     }
+
     .process-card {
       position: relative;
       padding: 1.75rem;
@@ -147,9 +205,11 @@
       overflow: hidden;
       color: #e2e8f0;
     }
+
     .process-card h3 {
       color: #f1f5ff;
     }
+
     .process-card::after {
       content: "";
       position: absolute;
@@ -161,16 +221,20 @@
       transition: opacity 0.3s ease;
       z-index: 0;
     }
+
     .process-card:hover::after {
       opacity: 0.35;
     }
-    .process-card > * {
+
+    .process-card>* {
       position: relative;
       z-index: 1;
     }
+
     .process-card .process-body {
       margin-top: 0.9rem;
     }
+
     .process-header {
       display: flex;
       justify-content: flex-start;
@@ -178,6 +242,7 @@
       gap: 0.75rem;
       color: #a5b4fc;
     }
+
     .process-header .icon-badge {
       width: 48px;
       height: 48px;
@@ -190,15 +255,18 @@
       color: #5eead4;
       border: 1px solid rgba(94, 234, 212, 0.35);
     }
+
     .process-list {
       padding-left: 1.2rem;
       margin-bottom: 0;
       color: rgba(226, 232, 240, 0.92);
     }
+
     .process-list li {
       margin-bottom: 0.4rem;
       font-size: 1rem;
     }
+
     .replication-card {
       background: rgba(15, 23, 42, 0.65);
       border: 1px solid rgba(148, 163, 184, 0.25);
@@ -206,6 +274,225 @@
       height: 100%;
       font-size: 1.05rem;
     }
+
+    .benchmark-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+      padding: 1.15rem 1.25rem;
+      background: linear-gradient(150deg, rgba(15, 23, 42, 0.85), rgba(30, 41, 59, 0.9));
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: 0 16px 36px rgba(2, 6, 23, 0.4);
+      transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+
+    .benchmark-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 12% 8%, rgba(94, 234, 212, 0.25), transparent 55%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .benchmark-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(120deg, rgba(94, 234, 212, 0.4), rgba(56, 189, 248, 0.35), rgba(129, 140, 248, 0.35));
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .benchmark-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(94, 234, 212, 0.6);
+      box-shadow: 0 28px 70px rgba(2, 6, 23, 0.55);
+    }
+
+    .benchmark-card:hover::before {
+      opacity: 0.35;
+    }
+
+    .benchmark-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .benchmark-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      background: rgba(94, 234, 212, 0.2);
+      color: #5eead4;
+      border: 1px solid rgba(94, 234, 212, 0.5);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.3);
+    }
+
+    .benchmark-card h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #f8fafc;
+    }
+
+    .benchmark-meta {
+      color: rgba(226, 232, 240, 0.85);
+      font-size: 0.95rem;
+      margin-bottom: 0.9rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .benchmark-hero {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #f8fafc;
+      margin-bottom: 0.35rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .benchmark-hero span {
+      font-size: 1rem;
+      color: rgba(226, 232, 240, 0.75);
+      margin-left: 0.35rem;
+      font-weight: 500;
+    }
+
+    .benchmark-sub {
+      color: rgba(226, 232, 240, 0.8);
+      font-size: 0.98rem;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .benchmark-meter {
+      position: relative;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.7);
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .benchmark-meter span {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(94, 234, 212, 0.9), rgba(56, 189, 248, 0.85));
+      width: 0%;
+      animation: meterFill 1.6s ease forwards;
+    }
+
+    .benchmark-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.55rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .benchmark-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 0.65rem;
+      background: rgba(2, 6, 23, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 0.95rem;
+      color: #e2e8f0;
+    }
+
+    .benchmark-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.6rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .benchmark-chip {
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: rgba(226, 232, 240, 0.9);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .benchmark-ring {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: conic-gradient(#5eead4 var(--ring), rgba(15, 23, 42, 0.4) 0);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0.25rem 0 0.75rem;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 8px 22px rgba(2, 6, 23, 0.4);
+    }
+
+    .benchmark-ring span {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #f8fafc;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    @keyframes meterFill {
+      from {
+        width: 0%;
+      }
+
+      to {
+        width: var(--meter);
+      }
+    }
+
+    .benchmark-list strong {
+      color: #f8fafc;
+      font-weight: 600;
+    }
+
+    .benchmark-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: rgba(59, 130, 246, 0.2);
+      color: #bfdbfe;
+      border: 1px solid rgba(59, 130, 246, 0.35);
+    }
+
     .replication-card h3 {
       font-size: 1.3rem;
       margin-bottom: 0.85rem;
@@ -214,14 +501,17 @@
       align-items: center;
       gap: 0.6rem;
     }
+
     .replication-card h3 i {
       font-size: 1.2rem;
       opacity: 0.8;
     }
+
     .replication-card h3 i {
       font-size: 1.2rem;
       opacity: 0.8;
     }
+
     .info-steps {
       list-style: none;
       padding-left: 0;
@@ -229,9 +519,11 @@
       font-size: 1.05rem;
       color: rgba(226, 232, 240, 0.92);
     }
+
     .info-steps li {
       margin-bottom: 1.4rem;
     }
+
     .command-block {
       display: flex;
       align-items: center;
@@ -243,10 +535,12 @@
       margin-top: 0.45rem;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
+
     .command-block.copied {
       border-color: #5eead4;
       box-shadow: 0 0 12px rgba(94, 234, 212, 0.35);
     }
+
     .command-block code {
       font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
       font-size: 1rem;
@@ -254,14 +548,17 @@
       flex: 1;
       margin: 0;
     }
+
     .command-block .copy-command {
       flex: 0 0 auto;
       border-color: rgba(148, 163, 184, 0.5);
       color: #f8fbff;
     }
+
     .command-block .copy-command i {
       pointer-events: none;
     }
+
     #global-copy-alert {
       position: fixed;
       top: 1rem;
@@ -294,11 +591,13 @@
       background: transparent;
       cursor: zoom-in;
     }
+
     .frame-caption {
       color: #f9fbff;
       font-size: 1.2rem;
       line-height: 1.5;
     }
+
     .frame-caption-secondary {
       color: #d0dcff;
       font-size: 1rem;
@@ -313,12 +612,14 @@
       background: #ffffff;
       border: 1px solid rgba(15, 23, 42, 0.08);
     }
+
     [data-bs-theme="light"] .video-card:hover,
     [data-bs-theme="light"] .video-card:focus-visible {
       border-color: rgba(79, 70, 229, 0.45);
       box-shadow: 0 20px 45px rgba(15, 23, 42, 0.15);
       background: #f4f4ff;
     }
+
     [data-bs-theme="light"] .video-card:hover::before,
     [data-bs-theme="light"] .video-card:focus-visible::before {
       border-color: rgba(79, 70, 229, 0.55);
@@ -330,31 +631,39 @@
       border: 1px solid rgba(15, 23, 42, 0.08);
       color: #0f172a;
     }
+
     [data-bs-theme="light"] .process-card::after {
       background: linear-gradient(120deg, rgba(79, 70, 229, 0.2), rgba(14, 165, 233, 0.2));
     }
+
     [data-bs-theme="light"] .process-header {
       color: #1e293b;
     }
+
     [data-bs-theme="light"] .process-header .icon-badge {
       background: rgba(37, 99, 235, 0.12);
       border-color: rgba(37, 99, 235, 0.3);
       color: #1d4ed8;
     }
+
     [data-bs-theme="light"] .script-card .script-toggle {
       border-color: rgba(15, 23, 42, 0.25);
       color: #0f172a;
     }
+
     [data-bs-theme="light"] .process-card h3 {
       color: #0f172a;
     }
+
     [data-bs-theme="light"] .card .small,
     [data-bs-theme="light"] .card small {
       color: #1f2937 !important;
     }
+
     [data-bs-theme="light"] .frame-caption {
       color: #0f172a;
     }
+
     [data-bs-theme="light"] .frame-caption-secondary {
       color: #334155;
     }
@@ -362,25 +671,104 @@
     [data-bs-theme="light"] .process-list {
       color: #475569 !important;
     }
+
     [data-bs-theme="light"] .replication-card {
       background: #ffffff;
       border: 1px solid rgba(15, 23, 42, 0.08);
       color: #0f172a;
     }
+
+    [data-bs-theme="light"] .benchmark-card {
+      background: linear-gradient(150deg, #ffffff, #eef2ff);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+    }
+
+    [data-bs-theme="light"] .benchmark-card::after {
+      background: radial-gradient(circle at 12% 8%, rgba(59, 130, 246, 0.2), transparent 55%);
+    }
+
+    [data-bs-theme="light"] .benchmark-icon {
+      background: rgba(59, 130, 246, 0.12);
+      color: #2563eb;
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    [data-bs-theme="light"] .benchmark-card h3 {
+      color: #0f172a;
+    }
+
+    [data-bs-theme="light"] .benchmark-hero {
+      color: #0f172a;
+    }
+
+    [data-bs-theme="light"] .benchmark-hero span {
+      color: #475569;
+    }
+
+    [data-bs-theme="light"] .benchmark-meta,
+    [data-bs-theme="light"] .benchmark-sub {
+      color: #475569;
+    }
+
+    [data-bs-theme="light"] .benchmark-list li {
+      background: #f0f4ff;
+      color: #1e293b;
+      border-color: rgba(15, 23, 42, 0.12);
+    }
+
+    [data-bs-theme="light"] .benchmark-list strong {
+      color: #0f172a;
+    }
+
+    [data-bs-theme="light"] .benchmark-list li span {
+      color: #1e40af;
+      font-weight: 600;
+    }
+
+    [data-bs-theme="light"] .benchmark-meter {
+      background: rgba(15, 23, 42, 0.12);
+    }
+
+    [data-bs-theme="light"] .benchmark-pill {
+      background: rgba(59, 130, 246, 0.12);
+      color: #1d4ed8;
+      border-color: rgba(59, 130, 246, 0.25);
+    }
+
+    [data-bs-theme="light"] .benchmark-chip {
+      background: #f1f5ff;
+      color: #1e293b;
+      border-color: rgba(15, 23, 42, 0.08);
+    }
+
+    [data-bs-theme="light"] .benchmark-meter {
+      background: rgba(226, 232, 240, 0.9);
+    }
+
+    [data-bs-theme="light"] .benchmark-ring span {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
     [data-bs-theme="light"] .replication-card h3 {
       color: #0f172a;
     }
+
     [data-bs-theme="light"] .info-steps {
       color: #475569 !important;
     }
+
     [data-bs-theme="light"] .command-block {
       background: #f8fafc;
       border: 1px solid rgba(15, 23, 42, 0.12);
       color: #0f172a;
     }
+
     [data-bs-theme="light"] .command-block code {
       color: #0f172a;
     }
+
     [data-bs-theme="light"] .command-block .copy-command {
       border-color: rgba(15, 23, 42, 0.2);
       color: #0f172a;
@@ -401,19 +789,24 @@
   <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
       <a class="navbar-brand" href=".">Automation Replay Dashboard</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <div class="ms-auto"></div>
         <div class="nav-item dropdown ms-2" role="group" aria-label="Toggle dark mode" title="Toggle Dark Mode">
-          <button class="dark-theme-toggle btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme (auto)">
+          <button class="dark-theme-toggle btn btn-outline-light dropdown-toggle" type="button"
+            data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme (auto)">
             <i class="bi bi-circle-half"></i> <span class="d-lg-none ms-2">Toggle theme</span>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><button class="dropdown-item" data-bs-theme-value="light"><i class="me-2 bi bi-sun-fill"></i> Light</button></li>
-            <li><button class="dropdown-item" data-bs-theme-value="dark"><i class="me-2 bi bi-moon-stars-fill"></i> Dark</button></li>
-            <li><button class="dropdown-item" data-bs-theme-value="auto"><i class="me-2 bi bi-circle-half"></i> Auto</button></li>
+            <li><button class="dropdown-item" data-bs-theme-value="light"><i class="me-2 bi bi-sun-fill"></i>
+                Light</button></li>
+            <li><button class="dropdown-item" data-bs-theme-value="dark"><i class="me-2 bi bi-moon-stars-fill"></i>
+                Dark</button></li>
+            <li><button class="dropdown-item" data-bs-theme-value="auto"><i class="me-2 bi bi-circle-half"></i>
+                Auto</button></li>
           </ul>
         </div>
       </div>
@@ -425,11 +818,21 @@
     <h1 class="display-1 my-4 text-center">Automation Replay Dashboard</h1>
     <h2 class="display-6 text-center">From raw footage to reliable Playwright specs</h2>
     <div class="mx-auto my-3 narrative text-center text-muted">
-      Five manual QA recordings were parsed frame-by-frame, meaningful evidence was compressed to ≤30 KB, on-screen URLs were validated live,
-      and each flow was rebuilt as a deterministic Playwright journey. Scroll down for the reconstruction story, keyframes,
+      Five manual QA recordings were parsed frame-by-frame, meaningful evidence was compressed to ≤30 KB, on-screen URLs
+      were validated live,
+      and each flow was rebuilt as a deterministic Playwright journey. Scroll down for the reconstruction story,
+      keyframes,
       reasoning trail, and executable scripts for every video.
     </div>
   </div>
+
+  <section class="container my-5">
+    <div class="text-center mb-4">
+      <p class="narrative mx-auto text-muted">Benchmark cards below use a single video run (video1) plus web-sourced
+        human averages to compare runtime, cost, and success rate.</p>
+    </div>
+    <div id="benchmark-cards" class="row g-4"></div>
+  </section>
 
   <div class="container my-4">
     <div id="demo-cards" class="row g-3 justify-content-center mb-4"></div>
@@ -439,7 +842,8 @@
 
   <section class="container my-5">
     <div class="text-center mb-4">
-      <p class="narrative mx-auto text-muted">Below is the three-stage pipeline that keeps every Playwright script faithful to the recordings while remaining resilient to UI drift.</p>
+      <p class="narrative mx-auto text-muted">Below is the three-stage pipeline that keeps every Playwright script
+        faithful to the recordings while remaining resilient to UI drift.</p>
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4 process-grid">
       <div class="col">
@@ -449,11 +853,12 @@
             <h3 class="h5 mt-1 mb-0">Capture & Curate</h3>
           </div>
           <div class="process-body">
-            <p class="small text-muted mb-3">Scene-detection finds motion spikes, then we hand-trim to the decisive UI states while preserving aspect ratio and ≤30 KB budgets.</p>
+            <p class="small text-muted mb-3">Scene-detection finds motion spikes, then we hand-trim to the decisive UI
+              states while preserving aspect ratio and ≤30 KB budgets.</p>
             <ul class="process-list">
-            <li>Frame similarity + OCR to confirm the URL bar.</li>
-            <li>Visual entropy score keeps only meaningful pauses.</li>
-            <li>Every saved frame pairs with its timestamp + action label.</li>
+              <li>Frame similarity + OCR to confirm the URL bar.</li>
+              <li>Visual entropy score keeps only meaningful pauses.</li>
+              <li>Every saved frame pairs with its timestamp + action label.</li>
             </ul>
           </div>
         </div>
@@ -465,11 +870,12 @@
             <h3 class="h5 mt-1 mb-0">Interpret & Align</h3>
           </div>
           <div class="process-body">
-            <p class="small text-muted mb-3">Vision + UI models narrate deltas between frames so we can map each pause to a DOM element, selector strategy, and assumption.</p>
+            <p class="small text-muted mb-3">Vision + UI models narrate deltas between frames so we can map each pause
+              to a DOM element, selector strategy, and assumption.</p>
             <ul class="process-list">
-            <li>Frame findings table links evidence → reasoning.</li>
-            <li>Selectors are dry-run on the live app for stability.</li>
-            <li>Conflicts trigger a manual revisit with the footage.</li>
+              <li>Frame findings table links evidence → reasoning.</li>
+              <li>Selectors are dry-run on the live app for stability.</li>
+              <li>Conflicts trigger a manual revisit with the footage.</li>
             </ul>
           </div>
         </div>
@@ -481,11 +887,12 @@
             <h3 class="h5 mt-1 mb-0">Automate & Verify</h3>
           </div>
           <div class="process-body">
-            <p class="small text-muted mb-3">Specs replay the action order with 2–3 s pacing, adaptive waits, and safety nets for ad skips, modal dismissals, or dice re-rolls.</p>
+            <p class="small text-muted mb-3">Specs replay the action order with 2–3 s pacing, adaptive waits, and safety
+              nets for ad skips, modal dismissals, or dice re-rolls.</p>
             <ul class="process-list">
-            <li>Reusable helpers enforce slow-mo + retry logic.</li>
-            <li>Scripts assert the same copy highlighted in frames.</li>
-            <li>Final run compares screenshots to ensure parity.</li>
+              <li>Reusable helpers enforce slow-mo + retry logic.</li>
+              <li>Scripts assert the same copy highlighted in frames.</li>
+              <li>Final run compares screenshots to ensure parity.</li>
             </ul>
           </div>
         </div>
@@ -498,31 +905,43 @@
       <div class="col-12">
         <div class="card replication-card shadow-sm border-0">
           <h3><i class="bi bi-terminal"></i> Run The Playwright Script</h3>
-          <p class="small text-muted mb-3">We validated these commands using the existing <code>video1/script.spec.ts</code> in the repo. Replace <code>video1</code> with any other folder that contains a spec you created.</p>
+          <p class="small text-muted mb-3">We validated these commands using the existing
+            <code>video1/script.spec.ts</code> in the repo. Replace <code>video1</code> with any other folder that
+            contains a spec you created.
+          </p>
           <ul class="info-steps">
             <li>
               Install Playwright (one-time)
               <div class="command-block">
                 <code>npx playwright install --with-deps chromium</code>
-                <button class="btn btn-sm btn-outline-info copy-command" type="button" data-copy-command="npx playwright install --with-deps chromium" aria-label="Copy install command"><i class="bi bi-clipboard"></i></button>
+                <button class="btn btn-sm btn-outline-info copy-command" type="button"
+                  data-copy-command="npx playwright install --with-deps chromium" aria-label="Copy install command"><i
+                    class="bi bi-clipboard"></i></button>
               </div>
-              <span class="small text-muted d-block mt-1">Need local dependencies? Run <code>npm install -D @playwright/test</code>, otherwise <code>npx</code> works fine.</span>
+              <span class="small text-muted d-block mt-1">Need local dependencies? Run
+                <code>npm install -D @playwright/test</code>, otherwise <code>npx</code> works fine.</span>
             </li>
             <li>
               Execute the automation
               <div class="command-block">
                 <code>npx playwright test video1/script.spec.ts --browser=chromium --headed</code>
-                <button class="btn btn-sm btn-outline-info copy-command" type="button" data-copy-command="npx playwright test video1/script.spec.ts --browser=chromium --headed" aria-label="Copy run command"><i class="bi bi-clipboard"></i></button>
+                <button class="btn btn-sm btn-outline-info copy-command" type="button"
+                  data-copy-command="npx playwright test video1/script.spec.ts --browser=chromium --headed"
+                  aria-label="Copy run command"><i class="bi bi-clipboard"></i></button>
               </div>
-              <span class="small text-muted d-block mt-1">Swap <code>video1</code> with your own folder (e.g., <code>my-test/script.spec.ts</code>).</span>
+              <span class="small text-muted d-block mt-1">Swap <code>video1</code> with your own folder (e.g.,
+                <code>my-test/script.spec.ts</code>).</span>
             </li>
             <li>
               Optional: slow things down for demo mode
               <div class="command-block">
                 <code>PWDEBUG=1 npx playwright test video1/script.spec.ts --browser=chromium --headed</code>
-                <button class="btn btn-sm btn-outline-info copy-command" type="button" data-copy-command="PWDEBUG=1 npx playwright test video1/script.spec.ts --browser=chromium --headed" aria-label="Copy slow run command"><i class="bi bi-clipboard"></i></button>
+                <button class="btn btn-sm btn-outline-info copy-command" type="button"
+                  data-copy-command="PWDEBUG=1 npx playwright test video1/script.spec.ts --browser=chromium --headed"
+                  aria-label="Copy slow run command"><i class="bi bi-clipboard"></i></button>
               </div>
-              <span class="small text-muted d-block mt-1">Setting <code>PWDEBUG=1</code> replays the script step-by-step (useful when you just need to watch it, no video required).</span>
+              <span class="small text-muted d-block mt-1">Setting <code>PWDEBUG=1</code> replays the script step-by-step
+                (useful when you just need to watch it, no video required).</span>
             </li>
           </ul>
         </div>
