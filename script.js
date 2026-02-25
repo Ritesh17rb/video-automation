@@ -265,8 +265,52 @@ const frameGrid = (video) => html`
   </div>
 `;
 
+const costCalculatorState = {
+  runs: 200,
+  costPerRun: 250,
+  multiplier: 1,
+};
+
+const getCostSavings = () => {
+  const { runs, costPerRun, multiplier } = costCalculatorState;
+  const savings = Math.round(runs * costPerRun * multiplier);
+  return savings;
+};
+
+const costCalculatorTemplate = (data) => {
+  const savings = getCostSavings();
+  return html`
+  <div class="benchmark-card chart-wrap mt-2">
+    <h3>ROI / Cost savings calculator</h3>
+    <p>Adjust sliders to see cost savings (model-driven automation vs manual).</p>
+    <div class="sim-wrap">
+      <div class="sim-controls">
+        <label class="control">
+          <span class="label-row"><span>Number of runs</span><strong id="runsVal">${costCalculatorState.runs}</strong></span>
+          <input id="runsSlider" type="range" min="50" max="2000" value="${costCalculatorState.runs}">
+        </label>
+        <label class="control">
+          <span class="label-row"><span>Cost saved per run ($)</span><strong id="costPerRunVal">$${costCalculatorState.costPerRun}</strong></span>
+          <input id="costPerRunSlider" type="range" min="25" max="500" step="25" value="${costCalculatorState.costPerRun}">
+        </label>
+        <label class="control">
+          <span class="label-row"><span>Period multiplier</span><strong id="multiplierVal">${costCalculatorState.multiplier.toFixed(1)}×</strong></span>
+          <input id="multiplierSlider" type="range" min="5" max="20" value="${costCalculatorState.multiplier * 10}">
+        </label>
+      </div>
+      <div class="sim-metrics sim-metrics-single" aria-live="polite">
+        <div class="sim-stat sim-stat-hero">
+          <div class="s-label">Cost savings</div>
+          <div class="s-value" id="costSavingsOut">$${savings.toLocaleString()}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+`;
+};
+
 const benchmarkTemplate = (data) => html`
-  <div class="col-md-4">
+  <div class="col-md-6">
     <div class="benchmark-card h-100">
       <div class="benchmark-header">
         <span class="benchmark-icon"><i class="bi bi-clock-history"></i></span>
@@ -290,24 +334,7 @@ const benchmarkTemplate = (data) => html`
       </ul>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="benchmark-card h-100">
-      <div class="benchmark-header">
-        <span class="benchmark-icon"><i class="bi bi-currency-dollar"></i></span>
-        <div>
-          <h3>Model Cost</h3>
-          <span class="benchmark-pill">Pricing-based</span>
-        </div>
-      </div>
-      <div class="benchmark-meta">Vision + UI + codegen tokens</div>
-      <div class="benchmark-hero">$${data.modelCostUsd.toFixed(3)}<span>USD</span></div>
-      <div class="benchmark-sub">Single-run estimate for the pipeline.</div>
-      <div class="benchmark-chip-row">
-        ${data.costDetail.map((item) => html`<span class="benchmark-chip">${item}</span>`)}
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4">
+  <div class="col-md-6">
     <div class="benchmark-card h-100">
       <div class="benchmark-header">
         <span class="benchmark-icon"><i class="bi bi-shield-check"></i></span>
@@ -317,12 +344,17 @@ const benchmarkTemplate = (data) => html`
         </div>
       </div>
       <div class="benchmark-meta">Generation + completion</div>
-      <div class="benchmark-ring" style="--ring: ${data.successPercentage}%;">
-        <span>${data.successPercentage}%</span>
+      <div class="benchmark-success-center">
+        <div class="benchmark-ring" style="--ring: 0%;" data-ring-target="${data.successPercentage}">
+          <span>${data.successPercentage}%</span>
+        </div>
       </div>
       <div class="benchmark-hero">${data.successRate}</div>
       <div class="benchmark-sub">${data.successNote}</div>
     </div>
+  </div>
+  <div class="col-12">
+    ${costCalculatorTemplate(data)}
   </div>
 `;
 
@@ -402,9 +434,46 @@ const renderCards = () => {
   render(videos.map((video) => cardTemplate(video)), cardsContainer);
 };
 
+const updateCostCalculatorOutputs = () => {
+  const savings = getCostSavings();
+  const el = (id) => document.getElementById(id);
+  if (el("runsVal")) el("runsVal").textContent = costCalculatorState.runs;
+  if (el("costPerRunVal")) el("costPerRunVal").textContent = "$" + costCalculatorState.costPerRun;
+  if (el("multiplierVal")) el("multiplierVal").textContent = costCalculatorState.multiplier.toFixed(1) + "×";
+  if (el("costSavingsOut")) el("costSavingsOut").textContent = "$" + savings.toLocaleString();
+};
+
+const attachCostCalculatorListeners = () => {
+  const getSlider = (id) => document.getElementById(id);
+  const sliders = [
+    { id: "runsSlider", key: "runs", parse: Number },
+    { id: "costPerRunSlider", key: "costPerRun", parse: Number },
+    { id: "multiplierSlider", key: "multiplier", parse: (v) => Number(v) / 10 },
+  ];
+  sliders.forEach(({ id, key, parse }) => {
+    const slider = getSlider(id);
+    if (!slider) return;
+    slider.addEventListener("input", () => {
+      costCalculatorState[key] = parse(slider.value);
+      updateCostCalculatorOutputs();
+    });
+  });
+};
+
 const renderBenchmark = () => {
   if (!benchmarkContainer) return;
   render(benchmarkTemplate(benchmark), benchmarkContainer);
+  attachCostCalculatorListeners();
+  const ring = benchmarkContainer.querySelector(".benchmark-ring");
+  if (ring) {
+    const target = Number(ring.dataset.ringTarget) || benchmark.successPercentage;
+    ring.style.setProperty("--ring", "0%");
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        ring.style.setProperty("--ring", target + "%");
+      });
+    });
+  }
 };
 
 const renderDetail = (video, scriptText) => {
