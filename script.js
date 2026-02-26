@@ -322,7 +322,6 @@ const benchmarkTemplate = (data) => html`
           <span class="benchmark-pill">Model run</span>
         </div>
       </div>
-      <div class="benchmark-meta">Video: ${data.videoId}</div>
       <div class="benchmark-hero">${data.modelTimeSeconds.toFixed(2)}s<span>total</span></div>
       <div class="benchmark-sub">Human baseline: ~${data.humanAverageMinutes} min (${data.humanRangeMinutes} min range)</div>
       <ul class="benchmark-list">
