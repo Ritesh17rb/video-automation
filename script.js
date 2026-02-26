@@ -145,11 +145,11 @@ const videos = [
       { src: "newhackernews/frames/frame03.webp", time: "00:05.5", label: "Typing Query", description: "Typing begins with the autocomplete overlay open.", codeRef: "await searchField.fill('hackernews');" },
       { src: "newhackernews/frames/frame04.webp", time: "00:08.5", label: "Google Results", description: "SERP with the Hacker News result visible.", codeRef: "await hackerNewsLink.waitFor({ state: 'visible', timeout: 10_000 });" },
       { src: "newhackernews/frames/frame05.webp", time: "00:14.5", label: "HN Front Page", description: "Front page loaded with the main HN table visible.", codeRef: "await expect(page.locator('table#hnmain')).toBeVisible({ timeout: 10_000 });" },
-      { src: "newhackernews/frames/frame06.webp", time: "00:16.5", label: "Nav: New", description: "Top navigation switched to new stories.", codeRef: "await clickTopNav('new', /newest/);" },
-      { src: "newhackernews/frames/frame07.webp", time: "00:18.5", label: "Nav: Past", description: "Past stories view after navigation click.", codeRef: "await clickTopNav('past', /front/);" },
-      { src: "newhackernews/frames/frame08.webp", time: "00:24.5", label: "Nav: Comments", description: "Comments listing after switching tabs.", codeRef: "await clickTopNav('comments', /newcomments/);" },
-      { src: "newhackernews/frames/frame09.webp", time: "00:26.5", label: "Nav: Ask", description: "Ask HN page reached from the top nav.", codeRef: "await clickTopNav('ask', /ask/);" },
-      { src: "newhackernews/frames/frame10.webp", time: "00:28.5", label: "Nav: Show", description: "Show HN listing loaded after the final click.", codeRef: "await clickTopNav('show', /show/);" }
+      { src: "newhackernews/frames/frame06.webp", time: "00:16.5", label: "Nav: New", description: "Top navigation switched to new stories.", codeRef: "await clickTopNav('new', /news\\.ycombinator\\.com\\/newest/);" },
+      { src: "newhackernews/frames/frame07.webp", time: "00:18.5", label: "Nav: Past", description: "Past stories view after navigation click.", codeRef: "await clickTopNav('past', /news\\.ycombinator\\.com\\/front/);" },
+      { src: "newhackernews/frames/frame08.webp", time: "00:24.5", label: "Nav: Comments", description: "Comments listing after switching tabs.", codeRef: "await clickTopNav('comments', /news\\.ycombinator\\.com\\/newcomments/);" },
+      { src: "newhackernews/frames/frame09.webp", time: "00:26.5", label: "Nav: Ask", description: "Ask HN page reached from the top nav.", codeRef: "await clickTopNav('ask', /news\\.ycombinator\\.com\\/ask/);" },
+      { src: "newhackernews/frames/frame10.webp", time: "00:28.5", label: "Nav: Show", description: "Show HN listing loaded after the final click.", codeRef: "await clickTopNav('show', /news\\.ycombinator\\.com\\/show/);" }
     ],
     findings: [
       { title: "SERP-first flow", detail: "Frames 01–04 show the Google hop before hitting Hacker News, so the script keeps a search-first path with a direct-nav fallback." },
@@ -673,8 +673,10 @@ lightbox.innerHTML = `
           <h5 id="frame-lightbox-title" class="mb-1"></h5>
           <p class="small text-muted mb-0" id="frame-lightbox-desc"></p>
         </div>
-        <img src="" alt="" class="img-fluid rounded mb-3" id="frame-lightbox-img">
-        <div class="d-flex justify-content-between mt-3 gap-2 flex-wrap">
+        <div class="frame-lightbox-image-wrap">
+          <img src="" alt="" class="img-fluid rounded" id="frame-lightbox-img">
+        </div>
+        <div class="d-flex justify-content-between gap-2 flex-wrap frame-lightbox-controls">
           <button class="btn btn-outline-light frame-lightbox-prev"><i class="bi bi-arrow-left"></i> Prev</button>
           <button class="btn btn-outline-light frame-lightbox-next">Next <i class="bi bi-arrow-right"></i></button>
         </div>

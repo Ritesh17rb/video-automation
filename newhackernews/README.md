@@ -29,10 +29,10 @@
 | `frame03.webp` | 00:05.5 | Typing begins with the autocomplete overlay open. | `await searchField.fill('hackernews');` | Mirrors the typed term in the UI. |
 | `frame04.webp` | 00:08.5 | SERP with the Hacker News result visible. | `await hackerNewsLink.waitFor({ state: 'visible', timeout: 10_000 });` | Uses both URL and visible text to avoid false positives. |
 | `frame05.webp` | 00:14.5 | Front page loaded with the main HN table visible. | `await expect(page.locator('table#hnmain')).toBeVisible();` | Confirms we are on Hacker News before navigating. |
-| `frame06.webp` | 00:16.5 | Top navigation switched to new stories. | `await clickTopNav('new', /newest/);` | Scopes the nav link to `td.pagetop`. |
-| `frame07.webp` | 00:18.5 | Past stories view after navigation click. | `await clickTopNav('past', /front/);` | URL assertion locks the correct page. |
-| `frame08.webp` | 00:24.5 | Comments listing after switching tabs. | `await clickTopNav('comments', /newcomments/);` | Ensures comments list is loaded. |
-| `frame09.webp` | 00:26.5 | Ask HN page reached from the top nav. | `await clickTopNav('ask', /ask/);` | Matches the recorded Ask HN view. |
-| `frame10.webp` | 00:28.5 | Show HN listing loaded after the final click. | `await clickTopNav('show', /show/);` | Final navigation state before the recording ends. |
+| `frame06.webp` | 00:16.5 | Top navigation switched to new stories. | `await clickTopNav('new', /news\.ycombinator\.com\/newest/);` | Scopes the nav link to `td.pagetop`. |
+| `frame07.webp` | 00:18.5 | Past stories view after navigation click. | `await clickTopNav('past', /news\.ycombinator\.com\/front/);` | URL assertion locks the correct page. |
+| `frame08.webp` | 00:24.5 | Comments listing after switching tabs. | `await clickTopNav('comments', /news\.ycombinator\.com\/newcomments/);` | Ensures comments list is loaded. |
+| `frame09.webp` | 00:26.5 | Ask HN page reached from the top nav. | `await clickTopNav('ask', /news\.ycombinator\.com\/ask/);` | Matches the recorded Ask HN view. |
+| `frame10.webp` | 00:28.5 | Show HN listing loaded after the final click. | `await clickTopNav('show', /news\.ycombinator\.com\/show/);` | Final navigation state before the recording ends. |
 
 All assets (frames, README, spec, and dashboard metadata) were regenerated on 24 Feb 2026.
