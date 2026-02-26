@@ -6,7 +6,7 @@ const CHATGPT_URL = "https://chatgpt.com/";
 const pause = (page: import("@playwright/test").Page, ms: number) =>
     page.waitForTimeout(ms);
 
-test("ChatGPT Incognito Greeting – hi / i am good exchange", async () => {
+test("ChatGPT Incognito Greeting – hii / how are / i am good exchange", async () => {
     // Launch a dedicated incognito browser so no cached session bleeds in.
     const browser = await chromium.launch({ headless: false, slowMo: 80 });
     const context = await browser.newContext({
@@ -54,9 +54,9 @@ test("ChatGPT Incognito Greeting – hi / i am good exchange", async () => {
     await textarea.waitFor({ state: "visible", timeout: 20_000 });
     await pause(page, 1000);
 
-    // ── Step 4: First message – "hi" ──────────────────────────────────────────
+    // ── Step 4: First message – "hii" ─────────────────────────────────────────
     await textarea.click();
-    await textarea.fill("hi");
+    await textarea.fill("hii");
     await pause(page, 600);
     await page.keyboard.press("Enter");
 
@@ -67,11 +67,27 @@ test("ChatGPT Incognito Greeting – hi / i am good exchange", async () => {
     await assistantReply.waitFor({ state: "visible", timeout: 20_000 });
     await pause(page, 2500);
 
-    // ── Step 5: Second message – "i am good" ──────────────────────────────────
+    // ── Step 5: Second message – "how are" ────────────────────────────────────
+    await textarea.click();
+    await textarea.fill("how are");
+    await pause(page, 600);
+    await page.keyboard.press("Enter");
+
+    const assistantReply2 = page
+        .locator('article[data-testid^="conversation-turn"]')
+        .nth(3);
+    await assistantReply2.waitFor({ state: "visible", timeout: 20_000 });
+    await pause(page, 2500);
+
+    // ── Step 6: Third message – "i am good" ───────────────────────────────────
     await textarea.click();
     await textarea.fill("i am good");
     await pause(page, 600);
     await page.keyboard.press("Enter");
+    const assistantReply3 = page
+        .locator('article[data-testid^="conversation-turn"]')
+        .nth(5);
+    await assistantReply3.waitFor({ state: "visible", timeout: 20_000 });
     await pause(page, 2500);
 
     // Final idle pause to mirror the recording end state.

@@ -54,7 +54,7 @@
       z-index: 1;
       max-width: min(1560px, 97vw);
       width: 100%;
-      padding: 1.25rem 2rem 1.25rem 1.5rem;
+      padding: 1rem 1.5rem;
       max-height: 98vh;
       overflow: hidden;
     }
@@ -62,21 +62,40 @@
     .frame-lightbox-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1.5rem;
+      gap: 1.1rem;
     }
 
     @media (min-width: 992px) {
       .frame-lightbox-grid {
-        grid-template-columns: minmax(0, 65%) minmax(0, 35%);
+        grid-template-columns: minmax(0, 72%) minmax(0, 28%);
       }
+    }
+
+    .frame-lightbox-media {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .frame-lightbox-caption h5 {
+      font-weight: 600;
+      color: #f8fafc;
+      font-size: 1.3rem;
+      line-height: 1.4;
+    }
+
+    .frame-lightbox-caption .text-muted {
+      color: rgba(226, 232, 240, 0.7) !important;
+      font-size: 1.05rem;
+      letter-spacing: 0.01em;
     }
 
     .frame-lightbox-media img {
       width: 100%;
-      max-height: 93vh;
+      max-height: 96vh;
       object-fit: contain;
       border-radius: 0.75rem;
-      margin-top: 0.5rem;
+      margin-top: 0;
     }
 
     .frame-lightbox-close {

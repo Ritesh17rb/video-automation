@@ -7,10 +7,10 @@ const videos = [
     id: "playground-pro",
     title: "Playground Pro – Predictor & Vault",
     summary: "Spin the WC predictor, mint the quantum key, refresh the Stanford playlist, unlock the vault after the modal, bump XP, and inspect the GitHub explorer.",
-    preview: "video1/frames/frame01.webp",
+    preview: "playground-pro/frames/frame01.webp",
     videoSrc: "videos/video1.webm",
-    scriptPath: "video1/script.spec.ts",
-    readmePath: "video1/README.md",
+    scriptPath: "playground-pro/script.spec.ts",
+    readmePath: "playground-pro/README.md",
     sourceUrl: "https://ritesh17rb.github.io/playground-testing/",
     actions: [
       "Spin the Predict Winner wheel and wait for the winner banner to solidify.",
@@ -26,16 +26,16 @@ const videos = [
       "Repo clicks use structural selectors (`#github-results .repo-card`) to avoid depending on dynamic names."
     ],
     frames: [
-      { src: "video1/frames/frame01.webp", time: "00:02.0", label: "Predictor Idle", description: "Landing hero plus Predict Winner CTA before any input.", codeRef: "const spinButton = page.getByRole('button', { name: 'Predict Winner' });" },
-      { src: "video1/frames/frame02.webp", time: "00:08.5", label: "Winner Banner", description: "Result label showing the spinning flow settled.", codeRef: "await spinButton.click();" },
-      { src: "video1/frames/frame03.webp", time: "00:12.7", label: "Result Settled", description: "Result banner fully resolved after the spin.", codeRef: "await expect(resultBanner).toHaveText(/Winner:/i, { timeout: 10_000 });" },
-      { src: "video1/frames/frame04.webp", time: "00:21.0", label: "Token Minted", description: "Shadow DOM display exposes the random key we persist.", codeRef: "const generatedKey = await generateVaultKey(page);" },
-      { src: "video1/frames/frame05.webp", time: "00:24.5", label: "Playlist Refresh", description: "Stanford LLM playlist cards visible after Fetch Update.", codeRef: "const playlistButton = page.locator('#fetch-playlist');" },
-      { src: "video1/frames/frame06.webp", time: "00:26.0", label: "Video Modal", description: "First playlist video expanded in the modal before dismissal.", codeRef: "const videoModal = page.locator('#video-modal');" },
-      { src: "video1/frames/frame07.webp", time: "00:30.0", label: "Validator Ready", description: "Stored key pasted into #verify-input ahead of verification.", codeRef: "await verifyInput.fill(generatedKey);" },
-      { src: "video1/frames/frame08.webp", time: "00:33.0", label: "Vault Unlocked", description: "SUCCESS banner confirming the validator step.", codeRef: "await expect(page.locator('#vault-status')).toHaveText(/SUCCESS: Vault Unlocked!/i, {" },
-      { src: "video1/frames/frame09.webp", time: "00:36.5", label: "XP Counter", description: "Engagement tracker showing the target value of 2.", codeRef: "await counterUp.click();" },
-      { src: "video1/frames/frame10.webp", time: "00:40.0", label: "GitHub Explorer", description: "Repo cards for ritesh17rb rendered and ready for clicks.", codeRef: "await githubUser.fill('ritesh17rb');" }
+      { src: "playground-pro/frames/frame01.webp", time: "00:02.0", label: "Predictor Idle", description: "Landing hero plus Predict Winner CTA before any input.", codeRef: "await expect(spinButton).toBeVisible();" },
+      { src: "playground-pro/frames/frame02.webp", time: "00:08.5", label: "Winner Banner", description: "Result label showing the spinning flow settled.", codeRef: "const resultBanner = page.locator('#spin-result');" },
+      { src: "playground-pro/frames/frame03.webp", time: "00:12.7", label: "Result Settled", description: "Result banner fully resolved after the spin.", codeRef: "await expect(resultBanner).toHaveText(/Winner:/i, { timeout: 10_000 });" },
+      { src: "playground-pro/frames/frame04.webp", time: "00:21.0", label: "Token Minted", description: "Shadow DOM display exposes the random key we persist.", codeRef: "const generatedKey = await generateVaultKey(page);" },
+      { src: "playground-pro/frames/frame05.webp", time: "00:24.5", label: "Playlist Refresh", description: "Stanford LLM playlist cards visible after Fetch Update.", codeRef: "await playlistButton.click();" },
+      { src: "playground-pro/frames/frame06.webp", time: "00:26.0", label: "Video Modal", description: "First playlist video expanded in the modal before dismissal.", codeRef: "await expect(videoModal).toBeVisible({ timeout: 10_000 });" },
+      { src: "playground-pro/frames/frame07.webp", time: "00:30.0", label: "Validator Ready", description: "Stored key pasted into #verify-input ahead of verification.", codeRef: "await verifyInput.fill(generatedKey);" },
+      { src: "playground-pro/frames/frame08.webp", time: "00:33.0", label: "Vault Unlocked", description: "SUCCESS banner confirming the validator step.", codeRef: "await expect(page.locator('#vault-status')).toHaveText(/SUCCESS: Vault Unlocked!/i, {" },
+      { src: "playground-pro/frames/frame09.webp", time: "00:36.5", label: "XP Counter", description: "Engagement tracker showing the target value of 2.", codeRef: "await expect(counterValue).toHaveText('2');" },
+      { src: "playground-pro/frames/frame10.webp", time: "00:40.0", label: "GitHub Explorer", description: "Repo cards for ritesh17rb rendered and ready for clicks.", codeRef: "await expect(repoCards.first()).toBeVisible({ timeout: 10_000 });" }
     ],
     findings: [
       { title: "Shadow DOM token handling", detail: "Frames 03–04 show why the spec pierces `#shadow-generator-host` and caches the token before running any other widget." },
@@ -47,10 +47,10 @@ const videos = [
     id: "strategy-board",
     title: "Strategy Board Game – Custom Scenario",
     summary: "Reset the board, launch the custom 'india' mission on Hard mode, roll until a question appears, answer it, and close the overlay.",
-    preview: "video2/frames/frame01.webp",
+    preview: "strategy-board/frames/frame01.webp",
     videoSrc: "videos/video2.webm",
-    scriptPath: "video2/script.spec.ts",
-    readmePath: "video2/README.md",
+    scriptPath: "strategy-board/script.spec.ts",
+    readmePath: "strategy-board/README.md",
     sourceUrl: "https://board-game-v2.vercel.app/",
     actions: [
       "Clear localStorage so the Custom Scenario card is always shown.",
@@ -65,17 +65,17 @@ const videos = [
       "A re-roll helper guards against the BREAK tile edge case the user highlighted."
     ],
     frames: [
-      { src: "video2/frames/frame01.webp", time: "00:01.3", label: "Custom Scenario Card", description: "Fresh board with the custom scenario CTA visible.", codeRef: "const domainInput = page.locator('#domain-input');" },
-      { src: "video2/frames/frame02.webp", time: "00:01.6", label: "Domain Filled", description: "“india” typed inside #domain-input before launching.", codeRef: "await domainInput.fill('india');" },
-      { src: "video2/frames/frame03.webp", time: "00:08.7", label: "Mission Briefing", description: "Bootstrap modal (#prepModal) summarizing the scenario.", codeRef: "const prepModal = page.locator('#prepModal');" },
-      { src: "video2/frames/frame04.webp", time: "00:13.7", label: "Hard Pill", description: "Hard difficulty actively selected prior to launch.", codeRef: "await page.locator('label[for=\"diff-hard\"]').click();" },
-      { src: "video2/frames/frame05.webp", time: "00:13.8", label: "Launch CTA", description: "Final confirmation before hitting #btn-launch-sim.", codeRef: "await page.locator('#btn-launch-sim').click();" },
-      { src: "video2/frames/frame06.webp", time: "00:21.4", label: "Board Ready", description: "Roll button rendered once the simulation mounts.", codeRef: "const rollButton = page.locator('#roll-btn');" },
-      { src: "video2/frames/frame07.webp", time: "00:21.4", label: "Dice Result", description: "Game log showing the outcome we wait for before polling the overlay.", codeRef: "await rollButton.click();" },
-      { src: "video2/frames/frame08.webp", time: "00:21.4", label: "Overlay Active", description: "Question modal flagged with the `active` class we monitor.", codeRef: "const questionOverlay = page.locator('#question-modal-overlay');" },
-      { src: "video2/frames/frame09.webp", time: "00:25.2", label: "Options Rendered", description: "Multiple choice buttons that the script selects by index.", codeRef: "const optionButtons = questionOverlay.locator('#modal-options button');" },
-      { src: "video2/frames/frame10.webp", time: "00:26.2", label: "Feedback Panel", description: "Topic feedback block displayed after the click.", codeRef: "await expect(questionOverlay.locator('#modal-feedback')).toBeVisible();" },
-      { src: "video2/frames/frame11.webp", time: "00:27.5", label: "Overlay Closed", description: "Overlay dismissed so the flow can end like the recording.", codeRef: "await questionOverlay.locator('#modal-close-btn').click();" }
+      { src: "strategy-board/frames/frame01.webp", time: "00:01.3", label: "Custom Scenario Card", description: "Fresh board with the custom scenario CTA visible.", codeRef: "await expect(domainInput).toBeVisible();" },
+      { src: "strategy-board/frames/frame02.webp", time: "00:01.6", label: "Domain Filled", description: "“india” typed inside #domain-input before launching.", codeRef: "await domainInput.fill('india');" },
+      { src: "strategy-board/frames/frame03.webp", time: "00:08.7", label: "Mission Briefing", description: "Bootstrap modal (#prepModal) summarizing the scenario.", codeRef: "await expect(prepModal).toBeVisible();" },
+      { src: "strategy-board/frames/frame04.webp", time: "00:13.7", label: "Hard Pill", description: "Hard difficulty actively selected prior to launch.", codeRef: "await page.locator('label[for=\"diff-hard\"]').click();" },
+      { src: "strategy-board/frames/frame05.webp", time: "00:13.8", label: "Launch CTA", description: "Final confirmation before hitting #btn-launch-sim.", codeRef: "await page.locator('#btn-launch-sim').click();" },
+      { src: "strategy-board/frames/frame06.webp", time: "00:21.4", label: "Board Ready", description: "Roll button rendered once the simulation mounts.", codeRef: "await expect(rollButton).toBeVisible({ timeout: 60_000 });" },
+      { src: "strategy-board/frames/frame07.webp", time: "00:21.4", label: "Dice Result", description: "Game log showing the outcome we wait for before polling the overlay.", codeRef: "await rollButton.click();" },
+      { src: "strategy-board/frames/frame08.webp", time: "00:21.4", label: "Overlay Active", description: "Question modal flagged with the `active` class we monitor.", codeRef: "const classes = (await questionOverlay.getAttribute('class')) ?? '';" },
+      { src: "strategy-board/frames/frame09.webp", time: "00:25.2", label: "Options Rendered", description: "Multiple choice buttons that the script selects by index.", codeRef: "await expect(optionButtons.first()).toBeVisible();" },
+      { src: "strategy-board/frames/frame10.webp", time: "00:26.2", label: "Feedback Panel", description: "Topic feedback block displayed after the click.", codeRef: "await expect(questionOverlay.locator('#modal-feedback')).toBeVisible();" },
+      { src: "strategy-board/frames/frame11.webp", time: "00:27.5", label: "Overlay Closed", description: "Overlay dismissed so the flow can end like the recording.", codeRef: "await questionOverlay.locator('#modal-close-btn').click();" }
     ],
     findings: [
       { title: "Launch flow evidence", detail: "Frames 01–05 show why the script clears storage, fills #domain-input, and asserts the Hard toggle before starting the sim." },
@@ -86,10 +86,10 @@ const videos = [
     id: "youtube-llm",
     title: "YouTube – LLM Deep Dive",
     summary: "Mimic the exploratory typing, search for “how llm works”, open the 3Blue1Brown video, and handle the pre-roll ad.",
-    preview: "video3/frames/frame01.webp",
+    preview: "youtube-llm/frames/frame01.webp",
     videoSrc: "videos/video3.webm",
-    scriptPath: "video3/script.spec.ts",
-    readmePath: "video3/README.md",
+    scriptPath: "youtube-llm/script.spec.ts",
+    readmePath: "youtube-llm/README.md",
     sourceUrl: "https://www.youtube.com/",
     actions: [
       "Load youtube.com and dismiss the consent prompt if it appears.",
@@ -103,16 +103,16 @@ const videos = [
       "Ad handling first waits for `.ytp-ad-skip-button` but tolerates ad-free runs."
     ],
     frames: [
-      { src: "video3/frames/frame01.webp", time: "00:00.0", label: "Home Feed", description: "Baseline YouTube feed before interacting.", codeRef: "await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });" },
-      { src: "video3/frames/frame02.webp", time: "00:02.2", label: "Autocomplete", description: "Suggestion sheet after typing “hos”.", codeRef: "await searchInput.fill('hos');" },
-      { src: "video3/frames/frame03.webp", time: "00:07.7", label: "Final Query", description: "“how llm works” locked into the search box.", codeRef: "await searchInput.type('how llm works', { delay: 120 });" },
-      { src: "video3/frames/frame04.webp", time: "00:09.2", label: "Results Grid", description: "First fold of LLM explainer videos.", codeRef: "await expect(page).toHaveURL(/results\\?search_query=how\\+llm\\+works/i, {" },
-      { src: "video3/frames/frame05.webp", time: "00:10.1", label: "Target Card", description: "3Blue1Brown result hovered before the click.", codeRef: "const llmVideo = page" },
-      { src: "video3/frames/frame06.webp", time: "00:10.5", label: "Watch Page Boot", description: "Player area mounting immediately after navigation.", codeRef: "await llmVideo.locator('a#thumbnail').click();" },
-      { src: "video3/frames/frame07.webp", time: "00:11.6", label: "Results Scroll", description: "Safety frame confirming URL change before the ad plays.", codeRef: "await expect(page).toHaveURL(/watch/, { timeout: 15_000 });" },
-      { src: "video3/frames/frame08.webp", time: "00:12.8", label: "Ad Overlay", description: "Sponsor slate covering the player while we wait.", codeRef: "const skipButton = page.locator('.ytp-ad-skip-button-modern, .ytp-ad-skip-button');" },
-      { src: "video3/frames/frame09.webp", time: "00:13.6", label: "Skip CTA", description: "Skip button visible, matching the automation step.", codeRef: "await skipButton.waitFor({ timeout: 10000 });" },
-      { src: "video3/frames/frame10.webp", time: "00:19.2", label: "Post-Ad Playback", description: "Video playing cleanly after the ad branch resolves.", codeRef: "await pause(2000);" }
+      { src: "youtube-llm/frames/frame01.webp", time: "00:00.0", label: "Home Feed", description: "Baseline YouTube feed before interacting.", codeRef: "await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });" },
+      { src: "youtube-llm/frames/frame02.webp", time: "00:02.2", label: "Autocomplete", description: "Suggestion sheet after typing “hos”.", codeRef: "await searchInput.fill('hos');" },
+      { src: "youtube-llm/frames/frame03.webp", time: "00:07.7", label: "Final Query", description: "“how llm works” locked into the search box.", codeRef: "await searchInput.type('how llm works', { delay: 120 });" },
+      { src: "youtube-llm/frames/frame04.webp", time: "00:09.2", label: "Results Grid", description: "First fold of LLM explainer videos.", codeRef: "await expect(page).toHaveURL(/results\\?search_query=how\\+llm\\+works/i, {" },
+      { src: "youtube-llm/frames/frame05.webp", time: "00:10.1", label: "Target Card", description: "3Blue1Brown result hovered before the click.", codeRef: "await expect(llmVideo).toBeVisible({ timeout: 15_000 });" },
+      { src: "youtube-llm/frames/frame06.webp", time: "00:10.5", label: "Watch Page Boot", description: "Player area mounting immediately after navigation.", codeRef: "await llmVideo.locator('a#thumbnail').click();" },
+      { src: "youtube-llm/frames/frame07.webp", time: "00:11.6", label: "Results Scroll", description: "Safety frame confirming URL change before the ad plays.", codeRef: "await expect(page).toHaveURL(/watch/, { timeout: 15_000 });" },
+      { src: "youtube-llm/frames/frame08.webp", time: "00:12.8", label: "Ad Overlay", description: "Sponsor slate covering the player while we wait.", codeRef: "const skipButton = page.locator('.ytp-ad-skip-button-modern, .ytp-ad-skip-button');" },
+      { src: "youtube-llm/frames/frame09.webp", time: "00:13.6", label: "Skip CTA", description: "Skip button visible, matching the automation step.", codeRef: "await skipButton.waitFor({ timeout: 10000 });" },
+      { src: "youtube-llm/frames/frame10.webp", time: "00:19.2", label: "Post-Ad Playback", description: "Video playing cleanly after the ad branch resolves.", codeRef: "await pause(2000);" }
     ],
     findings: [
       { title: "Search reproducibility", detail: "Frames 01–05 justify why the combobox typing order is reproduced verbatim in the script." },
@@ -141,9 +141,9 @@ const videos = [
     ],
     frames: [
       { src: "newhackernews/frames/frame01.webp", time: "00:00.5", label: "Chrome Start", description: "New tab landing before any navigation.", codeRef: "await page.goto(GOOGLE_HOME, { waitUntil: 'domcontentloaded' });" },
-      { src: "newhackernews/frames/frame02.webp", time: "00:04.5", label: "Google Ready", description: "Google home screen focused on the search field.", codeRef: "const searchField = page.locator('textarea[name=\"q\"]');" },
+      { src: "newhackernews/frames/frame02.webp", time: "00:04.5", label: "Google Ready", description: "Google home screen focused on the search field.", codeRef: "await expect(searchField).toBeVisible({ timeout: 10_000 });" },
       { src: "newhackernews/frames/frame03.webp", time: "00:05.5", label: "Typing Query", description: "Typing begins with the autocomplete overlay open.", codeRef: "await searchField.fill('hackernews');" },
-      { src: "newhackernews/frames/frame04.webp", time: "00:08.5", label: "Google Results", description: "SERP with the Hacker News result visible.", codeRef: "const hackerNewsLink = page.locator('a[href*=\"news.ycombinator.com\"]').filter({ hasText: /Hacker News/i }).first();" },
+      { src: "newhackernews/frames/frame04.webp", time: "00:08.5", label: "Google Results", description: "SERP with the Hacker News result visible.", codeRef: "await hackerNewsLink.waitFor({ state: 'visible', timeout: 10_000 });" },
       { src: "newhackernews/frames/frame05.webp", time: "00:14.5", label: "HN Front Page", description: "Front page loaded with the main HN table visible.", codeRef: "await expect(page.locator('table#hnmain')).toBeVisible({ timeout: 10_000 });" },
       { src: "newhackernews/frames/frame06.webp", time: "00:16.5", label: "Nav: New", description: "Top navigation switched to new stories.", codeRef: "await clickTopNav('new', /newest/);" },
       { src: "newhackernews/frames/frame07.webp", time: "00:18.5", label: "Nav: Past", description: "Past stories view after navigation click.", codeRef: "await clickTopNav('past', /front/);" },
@@ -159,16 +159,16 @@ const videos = [
   {
     id: "chatgpt-incognito",
     title: "ChatGPT Incognito Greeting",
-    summary: "Incognito Google search for chatgpt.com followed by the “hi / i am good” exchange inside the ChatGPT composer.",
-    preview: "video5/frames/frame01.webp",
+    summary: "Incognito Google search for chatgpt.com followed by the “hii / how are / i am good” exchange inside the ChatGPT composer.",
+    preview: "chatgpt-incognito/frames/frame01.webp",
     videoSrc: "videos/video5.webm",
-    scriptPath: "video5/script.spec.ts",
-    readmePath: "video5/README.md",
+    scriptPath: "chatgpt-incognito/script.spec.ts",
+    readmePath: "chatgpt-incognito/README.md",
     sourceUrl: "https://chatgpt.com/",
     actions: [
       "Open an incognito tab, type chatgpt.com into the omnibox, and press Enter.",
       "Jump directly to chatgpt.com whenever Google serves a /sorry page.",
-      "Wait for the composer, type “hi”, submit, await the assistant’s reply, then type “i am good”."
+      "Wait for the composer, type “hii”, submit, await the assistant’s reply, then type “how are” and “i am good”."
     ],
     reasoning: [
       "Composer detection uses `[contenteditable=\"true\"]` so we do not depend on private IDs.",
@@ -176,18 +176,21 @@ const videos = [
       "Cloudflare/verification banners are handled by waiting, matching the best effort captured on video."
     ],
     frames: [
-      { src: "video5/frames/frame01.webp", time: "00:01.1", label: "Incognito Splash", description: "Chrome incognito welcome screen before typing.", codeRef: "await page.goto(GOOGLE_HOME, { waitUntil: 'domcontentloaded' });" },
-      { src: "video5/frames/frame02.webp", time: "00:03.0", label: "Omnibox Query", description: "chatgpt.com entered into the omnibox.", codeRef: "const omnibox = page.locator('textarea[name=\"q\"]').first();" },
-      { src: "video5/frames/frame03.webp", time: "00:03.4", label: "SERP Snapshot", description: "Google results right before we jump to chatgpt.com.", codeRef: "await page.keyboard.press('Enter');" },
-      { src: "video5/frames/frame04.webp", time: "00:03.5", label: "Landing State", description: "ChatGPT splash while the composer initialises.", codeRef: "await page.goto('https://chatgpt.com/', { waitUntil: 'domcontentloaded' });" },
-      { src: "video5/frames/frame05.webp", time: "00:03.7", label: "First Utterance", description: "“hi” typed inside the contenteditable composer.", codeRef: "const textarea = page.locator('[contenteditable=\"true\"]').first();" },
-      { src: "video5/frames/frame06.webp", time: "00:06.6", label: "Assistant Reply", description: "Bot response (“Hey! What’s up?”) confirming handshake.", codeRef: "await expect(page.getByText(/Hey! .* What['’]s up\\?/)).toBeVisible({ timeout: 15_000 });" },
-      { src: "video5/frames/frame07.webp", time: "00:10.7", label: "Second Utterance", description: "“i am good” being entered to mirror the recording.", codeRef: "await textarea.fill('i am good');" },
-      { src: "video5/frames/frame08.webp", time: "00:21.1", label: "Conversation Idle", description: "Final chat state after the second message.", codeRef: "await pause(2500);" }
+      { src: "chatgpt-incognito/frames/frame01.webp", time: "00:00.6", label: "Incognito Splash", description: "Chrome incognito welcome screen before typing.", codeRef: "await page.goto(GOOGLE_HOME, { waitUntil: 'domcontentloaded' });" },
+      { src: "chatgpt-incognito/frames/frame02.webp", time: "00:01.4", label: "Omnibox Query", description: "chatgpt.com entered into the omnibox.", codeRef: "await omnibox.fill(\"chatgpt.com\");" },
+      { src: "chatgpt-incognito/frames/frame03.webp", time: "00:02.5", label: "SERP Snapshot", description: "Google results right before we jump to chatgpt.com.", codeRef: "await page.keyboard.press('Enter');" },
+      { src: "chatgpt-incognito/frames/frame04.webp", time: "00:03.5", label: "Landing State", description: "ChatGPT splash while the composer initialises.", codeRef: "await page.waitForURL(/chatgpt\\.com/, { timeout: 20_000 });" },
+      { src: "chatgpt-incognito/frames/frame05.webp", time: "00:06.7", label: "First Utterance", description: "“hii” typed inside the contenteditable composer.", codeRef: "await textarea.fill(\"hii\");" },
+      { src: "chatgpt-incognito/frames/frame06.webp", time: "00:10.8", label: "Assistant Reply", description: "Assistant response after the initial “hii”.", codeRef: "await assistantReply.waitFor({ state: \"visible\", timeout: 20_000 });" },
+      { src: "chatgpt-incognito/frames/frame07.webp", time: "00:13.0", label: "Second Utterance", description: "“how are” being typed as the follow-up.", codeRef: "await textarea.fill(\"how are\");" },
+      { src: "chatgpt-incognito/frames/frame08.webp", time: "00:18.1", label: "Second Reply", description: "Assistant response after “how are”.", codeRef: "await assistantReply2.waitFor({ state: \"visible\", timeout: 20_000 });" },
+      { src: "chatgpt-incognito/frames/frame09.webp", time: "00:19.9", label: "Third Utterance", description: "“i am good” entered to finish the chat.", codeRef: "await textarea.fill(\"i am good\");" },
+      { src: "chatgpt-incognito/frames/frame10.webp", time: "00:21.2", label: "Third Reply", description: "Assistant response after “i am good”.", codeRef: "await assistantReply3.waitFor({ state: \"visible\", timeout: 20_000 });" },
+      { src: "chatgpt-incognito/frames/frame11.webp", time: "00:24.0", label: "Conversation Idle", description: "Final chat state after the last reply.", codeRef: "await pause(page, 2000);" }
     ],
     findings: [
       { title: "Search + navigation proof", detail: "Frames 01–04 capture the incognito search path before we land on chatgpt.com." },
-      { title: "Message fidelity", detail: "Frames 05–08 show the exact phrases (“hi / i am good”) that the automation replays." }
+      { title: "Message fidelity", detail: "Frames 05–10 show the exact phrases (“hii / how are / i am good”) that the automation replays." }
     ]
   }
 ];
@@ -666,6 +669,10 @@ lightbox.innerHTML = `
     <button class="frame-lightbox-close" aria-label="Close">Close</button>
     <div class="frame-lightbox-grid">
       <div class="frame-lightbox-media">
+        <div class="frame-lightbox-caption">
+          <h5 id="frame-lightbox-title" class="mb-1"></h5>
+          <p class="small text-muted mb-0" id="frame-lightbox-desc"></p>
+        </div>
         <img src="" alt="" class="img-fluid rounded mb-3" id="frame-lightbox-img">
         <div class="d-flex justify-content-between mt-3 gap-2 flex-wrap">
           <button class="btn btn-outline-light frame-lightbox-prev"><i class="bi bi-arrow-left"></i> Prev</button>
@@ -674,8 +681,7 @@ lightbox.innerHTML = `
       </div>
       <div class="lightbox-code-panel">
         <div class="mb-2">
-          <h5 id="frame-lightbox-title" class="mb-1"></h5>
-          <p class="small text-muted mb-0" id="frame-lightbox-desc"></p>
+          <h5 class="mb-1">Script Highlight</h5>
         </div>
         <pre><code id="frame-lightbox-code">Select a code snippet</code></pre>
       </div>
@@ -720,8 +726,8 @@ const updateLightbox = () => {
   if (!frame) return;
   lightbox.querySelector("#frame-lightbox-img").src = frame.src;
   lightbox.querySelector("#frame-lightbox-img").alt = frame.label;
-  lightbox.querySelector("#frame-lightbox-title").textContent = frame.label;
-  lightbox.querySelector("#frame-lightbox-desc").textContent = frame.description;
+  lightbox.querySelector("#frame-lightbox-title").textContent = frame.description;
+  lightbox.querySelector("#frame-lightbox-desc").textContent = `t=${frame.time} · ${frame.label}`;
   const codeEl = lightbox.querySelector("#frame-lightbox-code");
   if (codeEl) {
     const activeVideoId = outputContainer.dataset.activeVideo;

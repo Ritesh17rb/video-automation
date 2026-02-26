@@ -30,15 +30,15 @@
 ## Frame Explanations
 | Frame | Timestamp | Action & Observation | Selector / Code Hook | Rationale |
 | --- | --- | --- | --- | --- |
-| `frame01.webp` | 00:02.0 | Landing hero plus Predict Winner CTA before any input. | `const spinButton = page.getByRole('button', { name: 'Predict Winner' });` | Confirms the page is ready and we have a stable handle for the CTA. |
-| `frame02.webp` | 00:08.5 | Spin button clicked; result banner animating. | `await spinButton.click();` | Mirrors the tester clicking immediately and waiting for the banner. |
-| `frame03.webp` | 00:12.7 | Result banner settled on screen. | `await expect(resultBanner).toHaveText(/Winner:/i);` | Assertion ensures the predictor flow truly finished. |
-| `frame04.webp` | 00:21.0 | Quantum Key Generator visible with token minted. | Shadow DOM helper call (`const generatedKey = await generateVaultKey(page);`) | Shows why we pierce the shadow DOM and retain the key. |
-| `frame05.webp` | 00:24.5 | Stanford playlist refresh button pressed, cards populated. | `await page.locator('#fetch-playlist').click();` | Evidence for the playlist-before-vault requirement. |
-| `frame06.webp` | 00:26.0 | First playlist video open inside modal. | `const videoModal = page.locator('#video-modal');` | Script waits for modal visibility before proceeding. |
-| `frame07.webp` | 00:30.0 | Validator ready with stored key pasted. | `await page.locator('#verify-input').fill(generatedKey);` | Ties the earlier generated key to the validator step. |
-| `frame08.webp` | 00:33.0 | Vault success banner displayed. | `await expect(page.locator('#vault-status')).toHaveText(/SUCCESS: Vault Unlocked!/i);` | Assertion proves the unlock happened after the modal closed. |
-| `frame09.webp` | 00:36.5 | XP counter showing value 2 after two taps. | `await expect(counterValue).toHaveText('2');` | Matches the tester’s double increment. |
-| `frame10.webp` | 00:40.0 | GitHub explorer populated for `ritesh17rb`. | `await page.locator('#github-user').fill('ritesh17rb');` | Demonstrates the repo search before the video ends. |
+| `frame01.webp` | 00:02.0 | Landing hero plus Predict Winner CTA before any input. | `await expect(spinButton).toBeVisible();` | Confirms the landing state before any interaction. |
+| `frame02.webp` | 00:08.5 | Result label showing the spinning flow settled. | `const resultBanner = page.locator('#spin-result');` | Mirrors the banner appearing after the spin. |
+| `frame03.webp` | 00:12.7 | Result banner fully resolved after the spin. | `await expect(resultBanner).toHaveText(/Winner:/i);` | Assertion ensures the predictor flow truly finished. |
+| `frame04.webp` | 00:21.0 | Shadow DOM display exposes the random key we persist. | `const generatedKey = await generateVaultKey(page);` | Shows why we pierce the shadow DOM and retain the key. |
+| `frame05.webp` | 00:24.5 | Stanford LLM playlist cards visible after Fetch Update. | `await playlistButton.click();` | Evidence for the playlist-before-vault requirement. |
+| `frame06.webp` | 00:26.0 | First playlist video expanded in the modal before dismissal. | `await expect(videoModal).toBeVisible({ timeout: 10_000 });` | Script waits for modal visibility before proceeding. |
+| `frame07.webp` | 00:30.0 | Stored key pasted into #verify-input ahead of verification. | `await verifyInput.fill(generatedKey);` | Ties the earlier generated key to the validator step. |
+| `frame08.webp` | 00:33.0 | SUCCESS banner confirming the validator step. | `await expect(page.locator('#vault-status')).toHaveText(/SUCCESS: Vault Unlocked!/i);` | Assertion proves the unlock happened after the modal closed. |
+| `frame09.webp` | 00:36.5 | Engagement tracker showing the target value of 2. | `await expect(counterValue).toHaveText('2');` | Matches the tester’s double increment. |
+| `frame10.webp` | 00:40.0 | Repo cards for ritesh17rb rendered and ready for clicks. | `await expect(repoCards.first()).toBeVisible({ timeout: 10_000 });` | Demonstrates the repo search before the video ends. |
 
 All assets (frames, README, spec, and dashboard metadata) were regenerated on 24 Feb 2026.
